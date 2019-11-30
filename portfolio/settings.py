@@ -11,14 +11,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', '*.herokuapp.com']
 
 # Application definition
-STOCKS = [
-    'MOAT',
-    'SPY',
-    'IXN',
-    'EVX',
-    'QCLN',
-    'GWPH',
-]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
