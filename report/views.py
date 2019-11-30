@@ -25,6 +25,14 @@ fpath = os.path.join(
 # Create your views here.
 def home(request):
     """ Show historical trend of stocks as graphs and tables """
+    def usd_fmt(value):
+        """ Comma-separate values over $10 and return string formatted """
+        if value < 10000:
+            return '$%.2f' % value
+        x = '%.2f' % value
+        x,y = x.split('.')
+        return '$%s,%s.%s' % (x[:-3], x[-3:-1], y)
+
     if not os.path.exists(fpath):
         return redirect('/update')
 
@@ -44,9 +52,9 @@ def home(request):
             '%.2f' % h.buy_price,
             '%s' % h.buy_qty,
             '%.2f' % current,
-            '$%.2f' % holding,
+            usd_fmt(holding),
             '%.2f %%' % pl_pc,
-            '$%.2f' % pl_usd,
+            usd_fmt(pl_usd),
             'plus' if pl_pc > 0 else 'minus',
         ]
 
