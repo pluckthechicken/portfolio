@@ -1,7 +1,8 @@
 import os
+import matplotlib
+from matplotlib import pyplot as plt
 import pandas_datareader as pdr
 from datetime import datetime
-from matplotlib import pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 
 from django.shortcuts import render, redirect
@@ -10,6 +11,7 @@ from django.conf import settings
 from .models import Historical
 
 register_matplotlib_converters()
+matplotlib.use('Agg')
 
 fpath = os.path.join(
     settings.BASE_DIR,
@@ -93,6 +95,8 @@ def plot_history(request=None):
     plt.xticks(rotation=80)
     plt.tight_layout()
     plt.legend(fontsize=12)
+    txt = 'Updated %s' % datetime.today().strftime('%d-%m-%Y')
+    plt.text(pl.index[0], plt.ylim()[0] * 0.9, txt, color='#999999')
 
     if not os.path.exists(os.path.dirname(fpath)):
         os.makedirs(os.path.dirname(fpath))
