@@ -31,7 +31,7 @@ def home(request):
             return '$%.2f' % value
         x = '%.2f' % value
         x,y = x.split('.')
-        return '$%s,%s.%s' % (x[:-3], x[-3:-1], y)
+        return '$%s,%s.%s' % (x[:-3], x[-3:], y)
 
     if not os.path.exists(fpath):
         return redirect('/update')
@@ -60,8 +60,8 @@ def home(request):
 
     data['Total'] = [
         '','','',
-        '$%.2f' % total_holding,'',
-        '$%.2f' % total_pl,''
+        usd_fmt(total_holding),'',
+        usd_fmt(total_pl),''
     ]
 
     return render(request, 'report/index.html', {'stocks': data})
