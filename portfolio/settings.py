@@ -2,11 +2,14 @@ import os
 import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print('BASE_DIR: %s' % BASE_DIR)
+
 SECRET_KEY = 'd%g0d9fu40b=5w4=8pi^)5g#b!@$tka1wc9gcgl^$rep8w9rsn'
 DEBUG = True
 HEROKU = False
 
-ALLOWED_HOSTS = ['localhost', '*.herokuapp.com']
+
+ALLOWED_HOSTS = ['127.0.0.1', '*.herokuapp.com']
 
 # Application definition
 STOCKS = [
@@ -66,10 +69,10 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'da2h56aqkbp664',
-        'USER': 'ldscylldwxamrv',
-        'PASSWORD': '1292b98c245e53587359b88757a18d3cf876e435ece50f68a81ae19c0a026710',
-        'HOST': 'ec2-54-228-246-214.eu-west-1.compute.amazonaws.com',
+        'NAME': 'dh8bvlv8oh7il',
+        'USER': 'ycgqszqhxrrgfs',
+        'PASSWORD': '236f1b8d9017de301cb563d193b537bddd5a20d46429b662954706304cb98c0c',
+        'HOST': 'ec2-174-129-255-26.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }

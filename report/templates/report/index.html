@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  	<meta charset="utf-8"/>
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title> Stock portfolio </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'report/css/portfolio.css'%}">
+  </head>
+
+  <body>
+
+    <div class="container-fluid">
+      <h1 class='text-muted title'> Stock portfolio </h1>
+      <div class="row justify-content-center">
+        <div class="col text-center">
+          <img src="{% static 'report/img/portfolio.png' %}" id="overview-img">
+          <br><br>
+          <a class="btn btn-primary btn-lg" href="/update">Update</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid table">
+      <h3 class="title text-muted">Holdings:</h3>
+      <table class="table">
+        <thead>
+          <th>Stock</th>
+          <th>Buy price</th>
+          <th>Quantity</th>
+          <th>Previous close</th>
+          <th>Holding (USD)</th>
+          <th>P/L</th>
+          <th>P/L</th>
+        </thead>
+        {% for name, data in stocks.items %}
+        {% if data.6 == 'plus' %}
+        <tr class="plus">
+        {% elif data.6 == 'minus' %}
+        <tr class="minus">
+        {% else %}
+        <tr class="total">
+        {% endif %}
+          <td>{{ name }}</td>
+          <td class="colour">{{ data.0 }}</td>
+          <td class="colour">{{ data.1 }}</td>
+          <td class="colour">{{ data.2 }}</td>
+          <td class="colour">{{ data.3 }}</td>
+          <td class="colour">{{ data.4 }}</td>
+          <td class="colour">{{ data.5 }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+
+  </script>
+</html>

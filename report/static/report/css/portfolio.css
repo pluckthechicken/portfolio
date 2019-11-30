@@ -1,6 +1,30 @@
-h3.title {
+h1.title {
   margin: 50px 100px;
 }
+h3.title {
+  margin: 25px 0;
+}
 #overview-img {
-  width: 80vw;
+  max-width: 800px;
+  max-height: 60vh;
+  margin: 25px 50px;
+}
+div.table {
+  width: 80%;
+  margin: 50px auto;
+}
+td {
+  text-align: center;
+}
+th {
+  text-align: center;
+}
+tr.plus td.colour {
+  color: green;
+}
+tr.minus td.colour {
+  color: red;
+}
+tr.total td {
+  font-weight: bold;
 }
