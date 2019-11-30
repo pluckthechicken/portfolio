@@ -6,7 +6,6 @@ print('BASE_DIR: %s' % BASE_DIR)
 
 SECRET_KEY = 'd%g0d9fu40b=5w4=8pi^)5g#b!@$tka1wc9gcgl^$rep8w9rsn'
 DEBUG = True
-HEROKU = False
 
 
 ALLOWED_HOSTS = ['127.0.0.1', '*.herokuapp.com']
@@ -117,8 +116,8 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
-if HEROKU:
-    # Configure Postgres
+if not os.environ.get('GOOGLEDRIVE'):
+    # Configure Heroku
     import django_heroku
     import dj_database_url
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)

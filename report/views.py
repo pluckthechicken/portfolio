@@ -1,5 +1,4 @@
 import os
-import pprint
 import shutil
 import pandas_datareader as pdr
 from datetime import datetime
@@ -13,9 +12,21 @@ from .models import Historical
 
 register_matplotlib_converters()
 
+fpath = os.path.join(
+    settings.BASE_DIR,
+    'report',
+    'static',
+    'report',
+    'img',
+    'portfolio.png',
+)
+
 # Create your views here.
 def home(request):
     """ Show historical trend of stocks as graphs and tables """
+    if not os.path.exists(fpath):
+        return redirect('/update')
+
     data = {}
     total_holding = 0
     total_pl = 0
@@ -85,25 +96,6 @@ def plot_history(request=None):
     plt.xticks(rotation=80)
     plt.tight_layout()
     plt.legend(fontsize=12)
-    basepath = os.path.join(
-        'report',
-        'img',
-        'portfolio.png'
-    )
-    fpath = os.path.join(
-        settings.BASE_DIR,
-        'report',
-        'static',
-        basepath,
-    )
-    static = os.path.join(
-        settings.BASE_DIR,
-        'portfolio',
-        'staticfiles',
-        basepath
-    )
 
     plt.savefig(fpath, dpi=300, facecolor='w')
-    shutil.copyfile(fpath,static)
-
     return redirect('/') if request else None
