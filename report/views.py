@@ -1,5 +1,4 @@
 import os
-import shutil
 import pandas_datareader as pdr
 from datetime import datetime
 from matplotlib import pyplot as plt
@@ -48,14 +47,12 @@ def home(request):
             '$%.2f' % pl_usd,
             'plus' if pl_pc > 0 else 'minus',
         ]
+
     data['Total'] = [
         '','','',
         '$%.2f' % total_holding,'',
         '$%.2f' % total_pl,''
     ]
-
-    pp = pprint.PrettyPrinter()
-    pp.pprint(data)
 
     return render(request, 'report/index.html', {'stocks': data})
 
@@ -97,8 +94,8 @@ def plot_history(request=None):
     plt.tight_layout()
     plt.legend(fontsize=12)
 
-    if not os.path.exists(os.path.dirname(fname)):
-        os.makedirs(os.path.dirname(fname))
+    if not os.path.exists(os.path.dirname(fpath)):
+        os.makedirs(os.path.dirname(fpath))
 
     plt.savefig(fpath, dpi=300, facecolor='w')
     return redirect('/') if request else None
