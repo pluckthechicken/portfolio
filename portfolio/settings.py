@@ -1,7 +1,5 @@
 import os
 import sys
-import django_heroku
-import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print('BASE_DIR: %s' % BASE_DIR)
@@ -112,6 +110,8 @@ STATIC_URL = '/static/'
 
 if not os.environ.get('GOOGLEDRIVE'):
     # Configure Heroku
+    import django_heroku
+    import dj_database_url
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
     # Configure heroku
     django_heroku.settings(locals())
