@@ -1,0 +1,9 @@
+django
+gunicorn
+django-heroku
+whitenoise
+dj-database-url
+matplotlib
+pandas
+pandas_datareader
+shutil
