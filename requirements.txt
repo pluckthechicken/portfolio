@@ -6,4 +6,3 @@ dj-database-url
 matplotlib
 pandas
 pandas_datareader
-shutil
