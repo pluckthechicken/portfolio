@@ -97,8 +97,8 @@ def plot_history(request=None):
     plt.tight_layout()
     plt.legend(fontsize=12)
 
-    if not os.path.exists(os.path.dirname(fname)):
-        os.makedirs(os.path.dirname(fname))
+    if not os.path.exists(os.path.dirname(fpath)):
+        os.makedirs(os.path.dirname(fpath))
 
     plt.savefig(fpath, dpi=300, facecolor='w')
     return redirect('/') if request else None
