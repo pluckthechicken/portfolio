@@ -1,3 +1,9 @@
+"""Serves a single 'homepage' view showing portfolio overview.
+
+Also shows an update view which updates static content and then redirects back
+to the homepage.
+"""
+
 import os
 import matplotlib
 from matplotlib import pyplot as plt
@@ -22,15 +28,16 @@ fpath = os.path.join(
     'portfolio.png',
 )
 
+
 # Create your views here.
 def home(request):
-    """ Show historical trend of stocks as graphs and tables """
+    """Show historical trend of stocks as graphs and tables."""
     def usd_fmt(value):
-        """ Comma-separate values over $10 and return string formatted """
+        """Comma-separate values over $10 and return string formatted."""
         if value < 10000:
             return '$%.2f' % value
         x = '%.2f' % value
-        x,y = x.split('.')
+        x, y = x.split('.')
         return '$%s,%s.%s' % (x[:-3], x[-3:], y)
 
     if not os.path.exists(fpath):
@@ -40,7 +47,7 @@ def home(request):
     total_holding = 0
     total_pl = 0
 
-    for h in  Historical.objects.all():
+    for h in Historical.objects.all():
         print('Loading data for %s' % h.stock)
         current = h.current
         pl_pc = 100 * (current - h.buy_price) / h.buy_price
@@ -59,22 +66,23 @@ def home(request):
         ]
 
     data['Total'] = [
-        '','','',
+        '', '', '',
         usd_fmt(total_holding),
         '%.2f %%' % (100 * total_pl / (total_holding - total_pl)),
-        usd_fmt(total_pl),''
+        usd_fmt(total_pl), ''
     ]
 
     return render(request, 'report/index.html', {'stocks': data})
 
+
 def plot_history(request=None):
-    """ Plot relative stock P/L from date of purchase """
+    """Plot relative stock P/L from date of purchase."""
     plt.style.use('fivethirtyeight')
 
-    fig = plt.figure(figsize=(8,6))
+    fig = plt.figure(figsize=(8, 6))
     s1 = plt.subplot(111)
 
-    s = datetime(2019,10,10)
+    s = datetime(2019, 10, 10)
     e = datetime.today()
 
     stocks = Historical.objects.all()
@@ -96,7 +104,11 @@ def plot_history(request=None):
         dfs = pdr.get_data_yahoo(stock.stock, start=s, end=e)
         close = dfs['Close']
         pl = close / close.iloc[0] - 1
-        s1.plot(pl.index, pl, linestyle='solid', linewidth=2, label=stock.stock)
+        s1.plot(
+            pl.index, pl,
+            linestyle='solid', linewidth=2,
+            label=stock.stock
+        )
         stock.update(list(pl.index), list(pl), close.iloc[-1])
 
     s1.plot(pl.index, [0 for x in pl.index], 'k-', linewidth=1)
