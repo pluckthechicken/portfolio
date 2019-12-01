@@ -60,7 +60,8 @@ def home(request):
 
     data['Total'] = [
         '','','',
-        usd_fmt(total_holding),'',
+        usd_fmt(total_holding),
+        '%.2f %%' % (100 * total_pl / (total_holding - total_pl)),
         usd_fmt(total_pl),''
     ]
 
