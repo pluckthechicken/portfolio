@@ -50,8 +50,8 @@
           <th>Quantity</th>
           <th>Previous close</th>
           <th>Holding (USD)</th>
-          <th>P/L</th>
-          <th>P/L</th>
+          <th>P/L (USD)</th>
+          <th>P/L (%)</th>
         </thead>
         {% for name, data in stocks.items %}
         {% if data.6 == 'plus' %}
@@ -62,8 +62,12 @@
         <tr class="total">
         {% endif %}
           <td>{{ name }}</td>
+          {% if data.6 == 'total' %}
+          <td class="colour" colspan=2>{{ data.0 }}</td>
+          {% else %}
           <td class="colour">{{ data.0 }}</td>
           <td class="colour">{{ data.1 }}</td>
+          {% endif %}
           <td class="colour">{{ data.2 }}</td>
           <td class="colour">{{ data.3 }}</td>
           <td class="colour">{{ data.4 }}</td>
@@ -71,6 +75,16 @@
         </tr>
         {% endfor %}
       </table>
+    </div>
+
+    <div class="container projection">
+      <h3> 12 month projection: </h3>
+      <h3> {{ projected }} </h3>
+    </div>
+    <br>
+    
+    <div class="yearprog">
+      <div class="yearproginner" style="width: {{ yearfrac }}%;"></div>
     </div>
 
   </body>

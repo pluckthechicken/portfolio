@@ -28,8 +28,10 @@ fpath = os.path.join(
     'portfolio.png',
 )
 
+start = datetime(2019, 10, 10)
+end = datetime.today()
 
-# Create your views here.
+
 def home(request):
     """Show historical trend of stocks as graphs and tables."""
     def usd_fmt(value):
@@ -44,6 +46,7 @@ def home(request):
         return redirect('/update')
 
     data = {}
+    init_holdings = 0
     total_holding = 0
     total_pl = 0
 
@@ -51,8 +54,10 @@ def home(request):
         print('Loading data for %s' % h.stock)
         current = h.current
         pl_pc = 100 * (current - h.buy_price) / h.buy_price
-        holding = h.buy_qty * h.buy_price
-        pl_usd = holding * (pl_pc / 100)
+        holding = h.buy_qty * current
+        init_holding = h.buy_qty * h.buy_price
+        init_holdings += init_holding
+        pl_usd = init_holding * (pl_pc / 100)
         total_holding += holding
         total_pl += pl_usd
         data[h.stock] = [
@@ -60,53 +65,62 @@ def home(request):
             '%s' % h.buy_qty,
             '%.2f' % current,
             usd_fmt(holding),
-            '%.2f %%' % pl_pc,
             usd_fmt(pl_usd),
+            '%.2f %%' % pl_pc,
             'plus' if pl_pc > 0 else 'minus',
         ]
 
     data['Total'] = [
-        '', '', '',
+        usd_fmt(init_holdings),
+        '',
+        '',
         usd_fmt(total_holding),
-        '%.2f %%' % (100 * total_pl / (total_holding - total_pl)),
-        usd_fmt(total_pl), ''
+        usd_fmt(total_pl),
+        '%.2f %%' % (100 * total_pl / init_holdings),
+        'total',
     ]
 
-    return render(request, 'report/index.html', {'stocks': data})
+    pl = total_holding / init_holdings
+    yearfrac = 365 / (end - start).days
+
+    return render(request, 'report/index.html', {
+        'stocks': data,
+        'projected': usd_fmt(init_holdings * (pl ** yearfrac)),
+        'yearfrac': '%.0f' % (100 / yearfrac),
+        }
+    )
 
 
 def plot_history(request=None):
     """Plot relative stock P/L from date of purchase."""
     plt.style.use('fivethirtyeight')
 
-    fig = plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(8, 6))
     s1 = plt.subplot(111)
 
-    s = datetime(2019, 10, 10)
-    e = datetime.today()
-
-    stocks = Historical.objects.all()
+    stocks = Historical.objects.all().order_by('stock')
 
     colours = [
-        'black',
+        'brown',   # EVX
+        'red',     # GWPH
+        'blue',    # IXN
+        'orange',  # MOAT
+        'green',   # QCLN
+        'purple',  # SPY
         'grey',
-        'blue',
-        'brown',
-        'green',
-        'orange',
-        'purple',
         'yellow',
         'maroon',
         'cyan',
+        'black',
     ][:len(stocks)]
 
     for stock, clr in zip(stocks, colours):
-        dfs = pdr.get_data_yahoo(stock.stock, start=s, end=e)
+        dfs = pdr.get_data_yahoo(stock.stock, start=start, end=end)
         close = dfs['Close']
         pl = close / close.iloc[0] - 1
         s1.plot(
             pl.index, pl,
-            linestyle='solid', linewidth=2,
+            linestyle='solid', linewidth=2, color=clr,
             label=stock.stock
         )
         stock.update(list(pl.index), list(pl), close.iloc[-1])

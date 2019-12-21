@@ -122,5 +122,6 @@ if not os.environ.get('GOOGLEDRIVE'):
         conn_max_age=600,
         ssl_require=True
     )
+    DEBUG = False
     # Configure heroku
     django_heroku.settings(locals())

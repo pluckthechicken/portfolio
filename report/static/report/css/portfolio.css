@@ -1,3 +1,6 @@
+body {
+  padding-bottom: 50px;
+}
 h1.title {
   margin: 50px 100px;
 }
@@ -27,4 +30,32 @@ tr.minus td.colour {
 }
 tr.total td {
   font-weight: bold;
+}
+.container.projection {
+  background-color: steelblue;
+  padding: 20px;
+  border: 1px solid darkslateblue;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 4px 6px 10px 0 rgba(0, 0, 0, 0.4);
+}
+.container.projection h3 {
+  color: white;
+}
+.yearprog {
+  display: flex;
+  margin: 50px auto;
+  border-radius: 12px;
+  border: 1px solid grey;
+  box-shadow: 3px 4px 8px 0 rgba(0, 0, 0, 0.3);
+  padding: 2px;
+  width: 50vw;
+  height: 25px;
+  text-align: left;
+}
+.yearproginner {
+  display: inline;
+  background-color: dodgerblue;
+  border-radius: 10px;
 }
