@@ -42,8 +42,7 @@ def home(request):
         x, y = x.split('.')
         return '$%s,%s.%s' % (x[:-3], x[-3:], y)
 
-    if not os.path.exists(fpath):
-        return redirect('/update')
+    plot_history()
 
     data = {}
     init_holdings = 0
