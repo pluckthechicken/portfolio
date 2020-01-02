@@ -7,10 +7,10 @@ h1.title {
 h3.title {
   margin: 25px 0;
 }
-#overview-img {
-  max-width: 800px;
-  max-height: 60vh;
-  margin: 25px 50px;
+#chart-div {
+  max-width: 1000px;
+  height: 600px;
+  margin: 0 auto;
 }
 div.table {
   width: 80%;

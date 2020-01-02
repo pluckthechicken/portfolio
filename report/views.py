@@ -5,28 +5,14 @@ to the homepage.
 """
 
 import os
-import matplotlib
-from matplotlib import pyplot as plt
+import json
 import pandas_datareader as pdr
-from datetime import datetime
-from pandas.plotting import register_matplotlib_converters
+from datetime import date, datetime
 
-from django.shortcuts import render, redirect
-from django.conf import settings
+from django.shortcuts import render
 
 from .models import Historical
 
-register_matplotlib_converters()
-matplotlib.use('Agg')
-
-fpath = os.path.join(
-    settings.BASE_DIR,
-    'report',
-    'static',
-    'report',
-    'img',
-    'portfolio.png',
-)
 
 start = datetime(2019, 10, 10)
 end = datetime.today()
@@ -42,8 +28,7 @@ def home(request):
         x, y = x.split('.')
         return '$%s,%s.%s' % (x[:-3], x[-3:], y)
 
-    if not os.path.exists(fpath):
-        return redirect('/update')
+    plot_data = fetch_plot_json()
 
     data = {}
     init_holdings = 0
@@ -85,20 +70,24 @@ def home(request):
 
     return render(request, 'report/index.html', {
         'stocks': data,
+        'plotData': plot_data,
         'projected': usd_fmt(init_holdings * (pl ** yearfrac)),
         'yearfrac': '%.0f' % (100 / yearfrac),
         }
     )
 
 
-def plot_history(request=None):
-    """Plot relative stock P/L from date of purchase."""
-    plt.style.use('fivethirtyeight')
-
-    plt.figure(figsize=(8, 6))
-    s1 = plt.subplot(111)
+def fetch_plot_json():
+    """Fetch stock P/L data and format for plotly."""
+    def fetch_data(stocks):
+        for stock in stocks:
+            dfs = pdr.get_data_yahoo(stock.stock, start=start, end=end)
+            close = dfs['Close']
+            pl = close / close.iloc[0] - 1
+            stock.update(list(pl.index), list(pl), close.iloc[-1])
 
     stocks = Historical.objects.all().order_by('stock')
+    data = []
 
     colours = [
         'brown',   # EVX
@@ -114,27 +103,17 @@ def plot_history(request=None):
         'black',
     ][:len(stocks)]
 
+    if stocks[0].series_x[-1] < date.today():
+        # Hasn't been updated today
+        fetch_data(stocks)
+
     for stock, clr in zip(stocks, colours):
-        dfs = pdr.get_data_yahoo(stock.stock, start=start, end=end)
-        close = dfs['Close']
-        pl = close / close.iloc[0] - 1
-        s1.plot(
-            pl.index, pl,
-            linestyle='solid', linewidth=2, color=clr,
-            label=stock.stock
-        )
-        stock.update(list(pl.index), list(pl), close.iloc[-1])
+        series = {'type': 'scatter', 'mode': 'lines', 'line': {'color': clr}}
+        series['name'] = stock.stock
+        series['x'] = [
+            datetime.strftime(x, '%Y-%m-%d') for x in stock.series_x
+        ]
+        series['y'] = stock.series_y
+        data.append(series)
 
-    s1.plot(pl.index, [0 for x in pl.index], 'k-', linewidth=1)
-    s1.set_yticklabels(['%.2f %%' % (100 * x) for x in s1.get_yticks()])
-    plt.xticks(rotation=80)
-    plt.tight_layout()
-    plt.legend(fontsize=12)
-    txt = 'Updated %s' % datetime.today().strftime('%d-%m-%Y')
-    plt.text(pl.index[0], plt.ylim()[0] * 0.9, txt, color='#999999')
-
-    if not os.path.exists(os.path.dirname(fpath)):
-        os.makedirs(os.path.dirname(fpath))
-
-    plt.savefig(fpath, dpi=300, facecolor='w')
-    return redirect('/') if request else None
+    return json.dumps(data)

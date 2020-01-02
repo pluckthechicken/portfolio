@@ -32,13 +32,7 @@
 
     <div class="container-fluid">
       <h1 class='text-muted title'> Stock portfolio </h1>
-      <div class="row justify-content-center">
-        <div class="col text-center">
-          <img src="{% static 'report/img/portfolio.png' %}" id="overview-img">
-          <br><br>
-          <a class="btn btn-primary btn-lg" href="/update">Update</a>
-        </div>
-      </div>
+      <div id="chart-div" style="max-width: 1000px; height: 600px; margin: 0 auto;"></div>
     </div>
 
     <div class="container-fluid table">
@@ -82,7 +76,7 @@
       <h3> {{ projected }} </h3>
     </div>
     <br>
-    
+
     <div class="yearprog">
       <div class="yearproginner" style="width: {{ yearfrac }}%;"></div>
     </div>
@@ -92,8 +86,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.45.0.min.js"></script> <!-- 1.45 is latest -->
 
   <script type="text/javascript">
+
+    $(document).ready(function() {
+      plot();
+    })
+
+    var plotData = jQuery.parseJSON('{{ plotData | safe }}');
+
+    function plot(data) {
+        var data = plotData;  // List of series as dicts
+        var layout = {
+          xaxis: {type: 'date'},
+          yaxis: {tickformat: ',.0%'},
+        };
+        Plotly.newPlot('chart-div', data, layout, {responsive: true});
+    }
 
   </script>
 </html>

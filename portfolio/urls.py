@@ -20,5 +20,4 @@ from report import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('update', views.plot_history, name='update'),
 ]
