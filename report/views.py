@@ -8,9 +8,7 @@ import os
 import json
 import pandas_datareader as pdr
 from datetime import date, datetime
-
 from django.shortcuts import render
-
 from .models import Historical
 
 
