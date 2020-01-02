@@ -7,11 +7,6 @@ h1.title {
 h3.title {
   margin: 25px 0;
 }
-#chart-div {
-  max-width: 1000px;
-  height: 600px;
-  margin: 0 auto;
-}
 div.table {
   width: 80%;
   margin: 50px auto;
