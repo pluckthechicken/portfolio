@@ -16,7 +16,7 @@ td {
 }
 th {
   text-align: center;
-  background-color: #ccc;
+  background-color: #eee;
 }
 tr.plus td.colour {
   color: green;
@@ -26,7 +26,7 @@ tr.minus td.colour {
 }
 tr.total td {
   font-weight: bold;
-  background-color: #ccc;
+  background-color: #eee;
 }
 .container.projection {
   background-color: steelblue;
