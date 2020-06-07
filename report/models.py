@@ -91,7 +91,7 @@ class Position(models.Model):
             init_holding = p.buy_qty * p.buy_price
             init_holdings += init_holding
             pl_usd = init_holding * pl
-            total_pl += (pl_usd * p.holding / total_holdings)
+            total_pl += pl_usd
             data[p.stock_code] = [
                 '%.2f' % p.buy_price,
                 '%s' % p.buy_qty,
