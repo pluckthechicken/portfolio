@@ -32,42 +32,28 @@ class Position(models.Model):
 
     date_updated = models.DateTimeField(auto_now=True)
     stock_code = models.CharField(max_length=15)
-    series_x = ArrayField(models.DateField())
-    series_y = ArrayField(models.FloatField())
     buy_price = models.FloatField()
     buy_qty = models.IntegerField()
-    current = models.FloatField()
-    holding = models.FloatField()
+    current = models.FloatField(null=True)
+    holding = models.FloatField(null=True)
+    series_x = ArrayField(models.DateField())
+    series_y = ArrayField(models.FloatField(), null=True)
 
     @classmethod
     def create(cls, stock_code, buy_date, buy_price, buy_qty):
         """Fetch data and create new stock object."""
-        dfs = pdr.get_data_yahoo(
-            stock_code,
-            start=buy_date,
-            end=date.today()
-        )
-        close = dfs['Close']
-        PL = (close / buy_price - 1).round(2)
         p = cls.objects.create(
             stock_code=stock_code,
             buy_price=buy_price,
             buy_qty=buy_qty,
-            series_x=list(PL.index),
-            series_y=list(PL),
-            current=close.iloc[-1],
-            holding=round(close.iloc[-1] * buy_qty, 2)
+            series_x=[buy_date],
         )
-        p.update()
-        return p
-
-    @classmethod
-    def get_all(cls):
-        """Update and return all stocks."""
-        positions = cls.objects.all()
-        for p in positions:
+        try:
             p.update()
-        return positions
+        except ValueError:
+            print("Cannot update %s until tomorrow" % stock_code)
+        p.save()
+        return p
 
     @classmethod
     def render_report(cls):
@@ -118,7 +104,7 @@ class Position(models.Model):
     @classmethod
     def fetch_plot_json(cls):
         """Fetch stock P/L data and format for plotly."""
-        positions = cls.get_all().order_by('stock_code')
+        positions = cls.objects.all().order_by('stock_code')
         colours = COLOURS[:len(positions)]
         data = []
 
