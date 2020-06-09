@@ -69,10 +69,10 @@ class Position(models.Model):
         data = {}
         total_pl = 0
         init_holdings = 0
-        total_holdings = sum(cls.objects.all().values_list(
-            "holding", flat=True))
+        positions = cls.objects.exclude(series_y__isnull=True)
+        total_holdings = sum(positions.values_list("holding", flat=True))
 
-        for p in cls.objects.all():
+        for p in positions:
             pl = (p.current - p.buy_price) / p.buy_price
             pl_pc = 100 * pl
             init_holding = p.buy_qty * p.buy_price
@@ -104,7 +104,8 @@ class Position(models.Model):
     @classmethod
     def fetch_plot_json(cls):
         """Fetch stock P/L data and format for plotly."""
-        positions = cls.objects.all().order_by('stock_code')
+        positions = cls.objects.exclude(
+            series_y__isnull=True).order_by('stock_code')
         colours = COLOURS[:len(positions)]
         data = []
 
