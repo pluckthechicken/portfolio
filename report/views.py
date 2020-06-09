@@ -10,6 +10,7 @@ from .models import Position
 
 def home(request):
     """Show historical trend of stocks as graphs and tables."""
+    Position.update_all():
     return render(request, 'report/index.html', {
         'stocks': Position.render_report(),
         'plotData': Position.fetch_plot_json(),

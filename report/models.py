@@ -49,7 +49,7 @@ class Position(models.Model):
         )
         close = dfs['Close']
         PL = (close / buy_price - 1).round(2)
-        return cls.objects.create(
+        p = cls.objects.create(
             stock_code=stock_code,
             buy_price=buy_price,
             buy_qty=buy_qty,
@@ -58,6 +58,8 @@ class Position(models.Model):
             current=close.iloc[-1],
             holding=round(close.iloc[-1] * buy_qty, 2)
         )
+        p.update()
+        return p
 
     @classmethod
     def get_all(cls):
@@ -69,7 +71,7 @@ class Position(models.Model):
 
     @classmethod
     def render_report(cls):
-        """Render data for portfolio report."""
+        """Render data for portfolio report table."""
         def usd_fmt(value):
             """Comma-separate values over $10 and return string formatted."""
             if value < 10000:
@@ -85,7 +87,6 @@ class Position(models.Model):
             "holding", flat=True))
 
         for p in cls.objects.all():
-            print('Loading data for %s' % p.stock_code)
             pl = (p.current - p.buy_price) / p.buy_price
             pl_pc = 100 * pl
             init_holding = p.buy_qty * p.buy_price
@@ -135,6 +136,12 @@ class Position(models.Model):
             data.append(series)
         return json.dumps(data)
 
+    @classmethod
+    def update_all(cls):
+        """Call update() on all instances."""
+        for p in cls.objects.all():
+            p.update()
+
     def update(self):
         """Update the model with today's data."""
         def fetch_close():
@@ -144,7 +151,7 @@ class Position(models.Model):
                 start=date_from,
                 end=date.today()
             )
-            # Remove duplicate dates (causes a bug)
+            # Remove duplicate dates (causes a small bug)
             dfs = dfs.loc[~dfs.index.duplicated(keep='first')]
             if len(dfs):
                 return dfs['Close']
