@@ -143,7 +143,13 @@ class Position(models.Model):
             if len(dfs):
                 return dfs['Close']
 
-        close = fetch_close()
+        try:
+            close = fetch_close()
+        except KeyError:
+            print("Cannot fetch data for position opened today."
+                  " Try again tomorrow")
+            return
+
         if close is None:
             return
         PL = (close / self.buy_price - 1).round(2)
