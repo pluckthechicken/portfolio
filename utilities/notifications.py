@@ -54,7 +54,8 @@ def notify():
     send_email(address, 'Just a test email from Heroku!')
 
 
-schedule.every().day.at("08:15").do(notify)
+schedule.every().day.at("11:50").do(notify)
+schedule.every().day.at("21:50").do(notify)
 
 while True:
     schedule.run_pending()
