@@ -6,4 +6,5 @@ whitenoise==5.1.0
 matplotlib==3.2.1
 pandas==1.0.4
 pandas-datareader==0.8.1
+forex-python==1.5
 schedule

@@ -6,8 +6,9 @@ All prices reflect daily close.
 """
 
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import pandas_datareader as pdr
+from forex_python.converter import CurrencyRates
 
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -34,19 +35,21 @@ class Position(models.Model):
     stock_code = models.CharField(max_length=15)
     buy_price = models.FloatField()
     buy_qty = models.IntegerField()
+    currency = models.CharField(max_length=10, default="USD")
     current = models.FloatField(null=True)
     holding = models.FloatField(null=True)
     series_x = ArrayField(models.DateField())
     series_y = ArrayField(models.FloatField(), null=True)
 
     @classmethod
-    def create(cls, stock_code, buy_date, buy_price, buy_qty):
+    def create(cls, stock_code, buy_date, buy_price, buy_qty, currency="USD"):
         """Fetch data and create new stock object."""
         p = cls.objects.create(
             stock_code=stock_code,
             buy_price=buy_price,
             buy_qty=buy_qty,
             series_x=[buy_date],
+            currency=currency,
         )
         try:
             p.update()
@@ -75,7 +78,7 @@ class Position(models.Model):
         for p in positions:
             pl = (p.current - p.buy_price) / p.buy_price
             pl_pc = 100 * pl
-            init_holding = p.buy_qty * p.buy_price
+            init_holding = exchange[p.currency](p.buy_qty * p.buy_price)
             init_holdings += init_holding
             pl_usd = init_holding * pl
             total_pl += pl_usd
@@ -132,7 +135,9 @@ class Position(models.Model):
     def update(self):
         """Update the model with today's data."""
         def fetch_close():
-            date_from = self.series_x[-1]
+            date_from = self.series_x[-1] + timedelta(days=1)
+            if date_from >= date.today():
+                return
             dfs = pdr.get_data_yahoo(
                 self.stock_code,
                 start=date_from,
@@ -143,18 +148,46 @@ class Position(models.Model):
             if len(dfs):
                 return dfs['Close']
 
-        try:
-            close = fetch_close()
-        except KeyError:
-            print("Cannot fetch data for position opened today."
-                  " Try again tomorrow")
-            return
+        close = fetch_close()
 
         if close is None:
+            print("Cannot fetch any more data for position %s today." %
+                  self.stock_code)
             return
+        if self.series_y is None:
+            self.series_y = []
+
         PL = (close / self.buy_price - 1).round(2)
         self.series_x += list(PL.index)
         self.series_y += list(PL)
         self.current = close.iloc[-1]
-        self.holding = round(self.current * self.buy_qty, 2)
+        self.holding = exchange[self.currency](
+            self.current * self.buy_qty
+        )
         self.save()
+
+
+def USD_to_USD(usd):
+    """Blank function to return USD unaltered."""
+    return round(usd, 2)
+
+
+def GBX_to_USD(pence):
+    """Convert GBP pence to USD."""
+    c = CurrencyRates()
+    rate = c.get_rate('GBP', 'USD')
+    return round((pence / 100) / rate, 2)
+
+
+def AUD_to_USD(aud):
+    """Convert AUD to USD."""
+    c = CurrencyRates()
+    rate = c.get_rate('AUD', 'USD')
+    return round(aud / rate, 2)
+
+
+exchange = {
+    "USD": USD_to_USD,
+    "GBX": GBX_to_USD,
+    "AUD": AUD_to_USD,
+}
