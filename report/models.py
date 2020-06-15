@@ -176,7 +176,7 @@ def GBX_to_USD(pence):
     """Convert GBP pence to USD."""
     c = CurrencyRates()
     rate = c.get_rate('GBP', 'USD')
-    return round((pence / 100) / rate, 2)
+    return round((pence / 100) * rate, 2)
 
 
 def AUD_to_USD(aud):
