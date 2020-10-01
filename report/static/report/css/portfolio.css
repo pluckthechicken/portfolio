@@ -1,5 +1,6 @@
 body {
   padding-bottom: 50px;
+  background-color: #232524;
 }
 h1.title {
   margin: 50px 100px;
@@ -8,25 +9,27 @@ h3.title {
   margin: 25px 0;
 }
 div.table {
+  color: white;
   width: 80%;
   margin: 50px auto;
 }
 td {
+  background-color: #282a29;
   text-align: center;
 }
 th {
   text-align: center;
-  background-color: #eee;
+  background-color: #555;
 }
 tr.plus td.colour {
-  color: green;
+  color: lawngreen;
 }
 tr.minus td.colour {
-  color: red;
+  color: #ff3333;
 }
 tr.total td {
   font-weight: bold;
-  background-color: #eee;
+  background-color: #333534;
 }
 .container.projection {
   background-color: steelblue;
