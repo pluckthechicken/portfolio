@@ -14,19 +14,18 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 COLOURS = [
-    'orange',   # EVX
-    'red',      # GWPH
-    'green',    # QCLN
-    'blue',
-    'purple',
-    'grey',
-    'yellow',
-    'maroon',
-    'cyan',
-    'brown',
-    'black',
+    'white',
+    '#feb71a',
+    '#ff4422',
+    '#46f068',
+    '#3388ff',
+    '#c940f5',
+    '#00ffe0',
+    '#91c781',
+    '#ff8dc8',
+    '#f11a67',
+    '#f4fc43',
 ]
-
 
 class Position(models.Model):
     """Store historical share price data."""
