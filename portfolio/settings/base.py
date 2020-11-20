@@ -13,7 +13,6 @@ WATCH_DAYS = 10     # Check change over last X days
 LOSS_THRESHOLD = 2  # Report losses > X%
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -61,11 +60,10 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dh8bvlv8oh7il',
-        'USER': 'ycgqszqhxrrgfs',
-        'PASSWORD': '236f1b8d9017de301cb563d193b537'
-                    'bddd5a20d46429b662954706304cb98c0c',
-        'HOST': 'ec2-174-129-255-26.compute-1.amazonaws.com',
+        'NAME': 'portfolio',
+        'USER': 'portfolio',
+        'PASSWORD': 'f475y4i85467',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -106,6 +104,4 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
