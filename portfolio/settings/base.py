@@ -1,9 +1,9 @@
-"""Portfolio app settings."""
+"""Portfolio app base settings."""
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print('BASE_DIR: %s' % BASE_DIR)
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 SECRET_KEY = 'd%g0d9fu40b=5w4=8pi^)5g#b!@$tka1wc9gcgl^$rep8w9rsn'
 DEBUG = False
@@ -11,11 +11,6 @@ DEBUG = False
 # Price trend notification settings (not working)
 WATCH_DAYS = 10     # Check change over last X days
 LOSS_THRESHOLD = 2  # Report losses > X%
-
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'stocks.neoformit.com'
-]
 
 # Application definition
 
@@ -112,5 +107,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
