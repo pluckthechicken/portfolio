@@ -1,8 +1,6 @@
 gunicorn
+psycopg2-binary
 django==3.0.7
-django-heroku==0.3.1
-dj-database-url==0.5.0
-whitenoise==5.1.0
 matplotlib==3.2.1
 pandas==1.0.4
 pandas-datareader==0.8.1

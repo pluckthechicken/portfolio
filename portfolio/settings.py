@@ -6,13 +6,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print('BASE_DIR: %s' % BASE_DIR)
 
 SECRET_KEY = 'd%g0d9fu40b=5w4=8pi^)5g#b!@$tka1wc9gcgl^$rep8w9rsn'
-DEBUG = True
+DEBUG = False
 
 # Price trend notification settings
 WATCH_DAYS = 10     # Check change over last X days
 LOSS_THRESHOLD = 2  # Report losses > X%
 
-ALLOWED_HOSTS = ['127.0.0.1', 'portfoliage.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'stocks.neoformit.com']
 
 # Application definition
 
@@ -34,7 +34,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'portfolio.urls'
@@ -64,11 +63,10 @@ WSGI_APPLICATION = 'portfolio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dh8bvlv8oh7il',
-        'USER': 'ycgqszqhxrrgfs',
-        'PASSWORD': '236f1b8d9017de301cb563d193b537'
-                    'bddd5a20d46429b662954706304cb98c0c',
-        'HOST': 'ec2-174-129-255-26.compute-1.amazonaws.com',
+        'NAME': 'portfolio',
+        'USER': 'portfolio',
+        'PASSWORD': 'f475y4i85467',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -110,17 +108,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'portfolio', 'static')
 STATIC_URL = '/static/'
-
-if not os.environ.get('GOOGLEDRIVE'):
-    # Configure Heroku
-    import django_heroku
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600,
-        ssl_require=True
-    )
-    DEBUG = False
-    # Configure heroku
-    django_heroku.settings(locals())
