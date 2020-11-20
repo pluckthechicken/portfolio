@@ -27,6 +27,7 @@ COLOURS = [
     '#f4fc43',
 ]
 
+
 class Position(models.Model):
     """Store historical share price data."""
 
