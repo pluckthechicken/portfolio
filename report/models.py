@@ -165,8 +165,12 @@ class Position(models.Model):
         PL = (close / self.buy_price - 1).round(2)
         self.series_x += list(PL.index)
         self.series_y += list(PL)
+
+        # Don't know where this extra array item comes from
+        # but it's super annoying!
         if len(self.series_x) > len(self.series_y):
             del self.series_x[-1]
+
         self.current = close.iloc[-1]
         self.holding = currency.exchange[self.currency](
             self.current * self.buy_qty

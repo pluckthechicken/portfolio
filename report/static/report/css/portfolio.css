@@ -9,26 +9,31 @@ h1.title {
   margin: 50px 100px;
 }
 h3.title {
-  margin: 25px 0;
-}
-div.table {
-  color: white;
-  width: 80%;
   margin: 50px auto;
-  overflow-x: auto;
+  width: 80%;
+}
+div.table-responsive {
+  color: white;
+  margin: 50px auto;
+}
+table.table {
+  width: 80%;
+  margin: 0 auto;
 }
 .table td {
   text-align: center;
   vertical-align: middle;
   background-color: #282a29;
 }
-.table .total td {
-  padding: 20px 12px;
-}
 .table th {
   text-align: center;
   vertical-align: middle;
   background-color: #555;
+}
+.table.total th,
+.table.total td {
+  font-size: 1.5rem;
+  padding: 25px;
 }
 tr.plus td.colour {
   color: lawngreen;
@@ -57,7 +62,7 @@ button.btn-close img {
 #chart-div {
   width: 95vw;
   max-width: 1420px;
-  height: 65vw;
+  height: 60vw;
   max-height: 720px;
   margin: 0 auto 25px auto;
 }

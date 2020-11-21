@@ -1,0 +1,53 @@
+<form action="/" method="post">
+  {% csrf_token %}
+
+  <div class="modal fade" id="modal-open" tabindex="-1" role="dialog" aria-labelledby="modal-open-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal-open-title">Open a new position</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$(this).closest('form').find('input').val('');">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-row">
+              <div class="col">
+                <label for="buy_price">Stock code</label>
+                <input class="form-control" type="text" name="stock_code" value="{{ form.field.stock_code|default:'' }}" required>
+              </div>
+
+              <div class="col">
+                <label for="buy_price">Buy price</label>
+                <input class="form-control" type="number" name="buy_price" step=".01" value="{{ form.field.buy_price|default:'' }}" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="buy_price">Buy date</label>
+              <input class="form-control" type="date" name="buy_date" max="{% now 'Y-m-d' %}" value="{{ form.field.buy_date|default:'' }}" required>
+            </div>
+
+            <div class="form-row">
+              <div class="col">
+                <label for="buy_qty">Quantity</label>
+                <input class="form-control" type="number" name="buy_qty" value="{{ form.field.buy_qty|default:'' }}" required>
+              </div>
+
+              <div class="col">
+                <label for="buy_qty">Currency</label>
+                <input class="form-control" type="text" name="currency" value="{{ form.field.currency|default:'' }}"  required>
+                <small>Currently one of "USD", "GBP", "GBX" or "AUD"</small>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Create position</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$(this).closest('form').find('input').val('');">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

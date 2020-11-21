@@ -34,10 +34,10 @@ function plot() {
       },
 
       margin: {
-        l: 25,
-        r: 10,
-        b: 25,
-        t: 35,
+        l: mobile ? 25 : 50,
+        r: mobile ? 10 : 20,
+        b: mobile ? 25 : 50,
+        t: mobile ? 35 : 60,
         pad: mobile ? 5 : 15,
       },
     };

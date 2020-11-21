@@ -1,20 +1,26 @@
 /* Tablet media */
 @media (max-width: 768px) {
-
+  table.table {
+    width: 95%;
+  }
+  .title {
+    text-align: center;
+  }
+  #chart-div {
+    width: 90vw;
+    height: 60vh;
+    margin: 25px auto;
+  }
 }
 
 /* Phone media */
 @media (max-width: 576px) {
   h1.title {
     text-align: center;
-    margin: 30px 15px;
+    margin: 30px auto;
   }
   h3.title {
-    margin: 25px 0;
-  }
-
-  div.table {
-    width: 95%;
+    margin: 25px auto;
   }
   .table td {
     white-space: nowrap;
@@ -23,9 +29,13 @@
   .table th {
     font-size: 0.8rem;
   }
+  .table.total th {
+    font-size: 0.8rem;
+  }
+  .table.total td {
+    font-size: 1rem;
+  }
   #chart-div {
-    width: 90vw;
-    height: 60vh;
-    margin: 15px auto 15px auto;
+    margin: 15px auto;
   }
 }

@@ -1,35 +1,8 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-  	<meta charset="utf-8"/>
-  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, nofollow">
 
-    <title> Stock portfolio </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'report/css/portfolio.css'%}">
-    <link rel="stylesheet" href="{% static 'report/css/mobile.css'%}">
-
-    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'report/icons/apple-icon-57x57.png' %}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'report/icons/apple-icon-60x60.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'report/icons/apple-icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'report/icons/apple-icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'report/icons/apple-icon-114x114.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'report/icons/apple-icon-120x120.png' %}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'report/icons/apple-icon-144x144.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'report/icons/apple-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'report/icons/apple-icon-180x180.png' %}">
-    <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'report/icons/android-icon-192x192.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'report/icons/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'report/icons/favicon-96x96.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'report/icons/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'report/manifest.json' %}">
-    <meta name="msapplication-TileImage" content="{% static 'report/icons/ms-icon-144x144.png' %}">
-
-  </head>
+  {% include 'report/head.html' %}
 
   <body>
 
@@ -44,8 +17,10 @@
 
     {% if stocks.open %}
 
-    <div class="container-fluid table">
-      <h3 class="title text-muted">Open positions:</h3>
+
+    <h3 class="title text-muted">Open positions:</h3>
+
+    <div class="container-fluid table-responsive">
       <table class="table">
         <thead>
           <th>Stock</th>
@@ -89,17 +64,14 @@
     </div>
 
     {% else %}
-    <div class="container-fluid table">
-      <h3 class="title text-muted text-center">You have no open positions</h3>
-    </div>
+    <h3 class="title text-muted text-center">You have no open positions</h3>
     {% endif %}
 
     {% if stocks.closed %}
 
-    <br>
+    <h3 class="title text-muted">Closed positions:</h3>
 
-    <div class="container-fluid table">
-      <h3 class="title text-muted">Closed positions:</h3>
+    <div class="container-fluid table-responsive">
       <table class="table">
         <thead>
           <th>Stock</th>
@@ -135,10 +107,10 @@
       </table>
     </div>
 
-    <br>
 
-    <div class="container-fluid table">
-      <h3 class="title text-muted">Total portfolio profit/loss:</h3>
+    <h3 class="title text-muted">Total portfolio profit/loss:</h3>
+
+    <div class="container-fluid table-responsive">
       <table class="table total">
         <thead>
           <th>Investment (USD)</th>
@@ -155,112 +127,14 @@
     </div>
 
     {% else %}
-    <div class="container-fluid table">
-      <h3 class="title text-muted text-center">You have no closed positions</h3>
-    </div>
+    <h3 class="title text-muted text-center">You have no closed positions</h3>
     {% endif %}
 
 
-    <form action="/close/" method="post">
-      {% csrf_token %}
+    {% include 'report/create-modal.html' %}
 
-      <div class="modal fade" id="modal-close" tabindex="-1" role="dialog" aria-labelledby="modal-close-title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="modal-close-title">Close position</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
+    {% include 'report/close-modal.html' %}
 
-            <div class="modal-body">
-
-                <p class="lead">
-                  <!-- js filled -->
-                </p>
-
-                <div class="form-group">
-                  <label for="close_price">Sell price</label>
-                  <input class="form-control" type="number" name="close_price" step=".01" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="close_date">Sell date</label>
-                  <input class="form-control" type="date" name="close_date" max="{% now 'Y-m-d' %}" required>
-                </div>
-
-                <input type="hidden" name="position_id" value="">
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Close position</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModal();">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <form action="/" method="post">
-      {% csrf_token %}
-
-      <div class="modal fade" id="modal-open" tabindex="-1" role="dialog" aria-labelledby="modal-open-title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="modal-open-title">Open position</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$(this).closest('form').find('input').val('');">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-
-            <div class="modal-body">
-                <p class="lead">
-                  Open a new position
-                </p>
-
-                <div class="form-row">
-                  <div class="col">
-                    <label for="buy_price">Stock code</label>
-                    <input class="form-control" type="text" name="stock_code" value="{{ form.field.stock_code|default:'' }}" required>
-                  </div>
-
-                  <div class="col">
-                    <label for="buy_price">Buy price</label>
-                    <input class="form-control" type="number" name="buy_price" step=".01" value="{{ form.field.buy_price|default:'' }}" required>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="buy_price">Buy date</label>
-                  <input class="form-control" type="date" name="buy_date" max="{% now 'Y-m-d' %}" value="{{ form.field.buy_date|default:'' }}" required>
-                </div>
-
-                <div class="form-row">
-                  <div class="col">
-                    <label for="buy_qty">Quantity</label>
-                    <input class="form-control" type="number" name="buy_qty" value="{{ form.field.buy_qty|default:'' }}" required>
-                  </div>
-
-                  <div class="col">
-                    <label for="buy_qty">Currency</label>
-                    <input class="form-control" type="text" name="currency" value="{{ form.field.currency|default:'' }}"  required>
-                    <small>Currently one of "USD", "GBP", "GBX" or "AUD"</small>
-                  </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Create position</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$(this).closest('form').find('input').val('');">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-
-  </div>
 
   </body>
 
@@ -273,14 +147,15 @@
 
   <script type="text/javascript">
 
+    const createFormError = Boolean({{ form.errors }});
+    const plotData = jQuery.parseJSON('{{ plotData | safe }}');
+
     $(document).ready(function() {
       if (createFormError) {
         $('btn-create').click();
       }
       plot();
-    })
+    });
 
-    const createFormError = Boolean({{ form.errors }});
-    const plotData = jQuery.parseJSON('{{ plotData | safe }}');
   </script>
 </html>

@@ -6,27 +6,35 @@ import pandas_datareader as pdr
 from pandas_datareader._utils import RemoteDataError
 
 from . import currency
+from .timing import Stopwatch
 
 
 def fetch_close(position):
     """Return series of historical daily closing share price."""
+    sw = Stopwatch()
     if position.series_x:
         date_from = position.series_x[-1] + timedelta(days=1)
     else:
         date_from = position.buy_date
 
+    print("Date from:", date_from.strftime('%Y-%m-%d'))
+    print("Date today:", date.today().strftime('%Y-%m-%d'))
     if date_from >= date.today():
+        print(f"Returning after {sw.lap()} sec")
         return
 
+    print(f"Time comparison took {sw.lap()} sec")
     dfs = pdr.get_data_yahoo(
         position.stock_code,
         start=date_from,
         end=date.today()
     )
+    print(f"Fetched data in {sw.lap()} sec")
 
     # Remove duplicate dates from api data
     dfs.index = [ix.to_pydatetime().date() for ix in dfs.index]
     dfs = dfs.loc[~dfs.index.duplicated(keep='first')]
+    print(f"Cleaned API duplicates in {sw.lap()} sec")
 
     # Remove dates that already exist in DB
     if position.series_x:
@@ -35,6 +43,8 @@ def fetch_close(position):
             dfs.loc[unique_dates].index,
             inplace=True
         )
+    print(f"Cleaned existing dates in {sw.lap()} sec")
+
     if len(dfs):
         return dfs['Close']
 
@@ -58,6 +68,8 @@ def format_for_render(positions):
         x, y = x.split('.')
         return '$%s,%s.%s' % (x[:-3], x[-3:], y)
 
+    sw = Stopwatch()
+    print(f"Formatting stocks for render...")
     open_pl_usd = 0
     closed_pl_usd = 0
     open_init_usd = 0
@@ -138,6 +150,7 @@ def format_for_render(positions):
             'plus' if (open_pl_usd + closed_pl_usd) > 0 else 'minus',
         ]
 
+    print(f"Formatted data for render in {sw.lap()} sec")
     return data
 
 
