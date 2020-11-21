@@ -269,6 +269,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="{% static 'report/js/plotly-1.45.0.min.js' %}"></script>
     <script src="{% static 'report/js/position.js' %}"></script>
+    <script src="{% static 'report/js/plot.js' %}"></script>
 
   <script type="text/javascript">
 
@@ -281,47 +282,5 @@
 
     const createFormError = Boolean({{ form.errors }});
     const plotData = jQuery.parseJSON('{{ plotData | safe }}');
-    const mobile = window.innerWidth < 576;
-
-    function plot() {
-        const data = plotData;  // List of series as dicts
-        const layout = {
-          plot_bgcolor:"#232524",
-          paper_bgcolor:"#232524",
-          xaxis: {
-            type: 'date',
-            color: 'white',
-            tickfont: {
-              size: mobile ? 12 : 18,
-            },
-          },
-          yaxis: {
-            tickformat: ',.0%',
-            color: 'white',
-            tickfont: {
-              size: mobile ? 12 : 18,
-            },
-          },
-          legend: {
-            x: mobile ? 0.5 : 1.05,
-            y: mobile ? -0.15 : 0.5,
-            xanchor: mobile ? 'center' : 'left',
-            yanchor: mobile ? 'top' : 'center',
-            font: {
-              color: '#FFFFFF',
-              size: mobile ? 12 : 18,
-            },
-          },
-          margin: {
-            l: 50,
-            r: 0,
-            b: 50,
-            t: 0,
-            pad: mobile ? 5 : 15,
-          },
-        };
-        Plotly.newPlot('chart-div', data, layout, {responsive: true});
-    }
-
   </script>
 </html>
