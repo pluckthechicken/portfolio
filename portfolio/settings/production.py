@@ -1,6 +1,6 @@
 """Portfolio production settings."""
 
-from base import *
+from .base import *
 
 DEBUG = False
 

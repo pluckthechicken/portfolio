@@ -2,6 +2,9 @@ body {
   padding-bottom: 50px;
   background-color: #232524;
 }
+button:focus {
+  outline: none;
+}
 h1.title {
   margin: 50px 100px;
 }
@@ -12,13 +15,16 @@ div.table {
   color: white;
   width: 80%;
   margin: 50px auto;
+  overflow-x: auto;
 }
-td {
+.table td {
+  text-align: center;
+  vertical-align: middle;
   background-color: #282a29;
-  text-align: center;
 }
-th {
+.table th {
   text-align: center;
+  vertical-align: middle;
   background-color: #555;
 }
 tr.plus td.colour {
@@ -31,31 +37,17 @@ tr.total td {
   font-weight: bold;
   background-color: #333534;
 }
-.container.projection {
-  background-color: steelblue;
-  padding: 20px;
-  border: 1px solid darkslateblue;
-  border-radius: 20px;
-  text-align: center;
-  max-width: 400px;
-  box-shadow: 4px 6px 10px 0 rgba(0, 0, 0, 0.4);
+button.btn-close {
+  border: none;
+  background-color: transparent;
+  opacity: 0.5;
+  cursor: pointer;
+  transition-duration: 0.5s;
 }
-.container.projection h3 {
-  color: white;
+button.btn-close:hover {
+  opacity: 1;
 }
-.yearprog {
-  display: flex;
-  margin: 50px auto;
-  border-radius: 12px;
-  border: 1px solid grey;
-  box-shadow: 3px 4px 8px 0 rgba(0, 0, 0, 0.3);
-  padding: 2px;
-  width: 50vw;
-  height: 25px;
-  text-align: left;
-}
-.yearproginner {
-  display: inline;
-  background-color: dodgerblue;
-  border-radius: 10px;
+button.btn-close img {
+  width: auto;
+  height: 50px;
 }

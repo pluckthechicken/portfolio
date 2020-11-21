@@ -20,4 +20,5 @@ from report import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('close/', views.close_position, name='close_position'),
 ]

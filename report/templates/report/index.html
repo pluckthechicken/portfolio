@@ -35,41 +35,230 @@
       <div id="chart-div" style="max-width: 1000px; height: 600px; margin: 0 auto;"></div>
     </div>
 
+    <div class="container text-center">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-open">Create new position</button>
+    </div>
+
+    {% if stocks.open %}
+
     <div class="container-fluid table">
-      <h3 class="title text-muted">Holdings:</h3>
+      <h3 class="title text-muted">Open positions:</h3>
       <table class="table">
         <thead>
           <th>Stock</th>
           <th>Buy price</th>
-          <th>Quantity</th>
+          <th>Position</th>
           <th>Previous close</th>
           <th>Holding (USD)</th>
           <th>P/L (USD)</th>
           <th>P/L (%)</th>
+          <th>Close</th>
         </thead>
-        {% for name, data in stocks.items %}
-        {% if data.6 == 'plus' %}
-        <tr class="plus">
-        {% elif data.6 == 'minus' %}
-        <tr class="minus">
-        {% else %}
-        <tr class="total">
-        {% endif %}
+
+        {% for name, data in stocks.open.items %}
+
+        <tr class="{{ data.6 }}">
           <td>{{ name }}</td>
-          {% if data.6 == 'total' %}
-          <td class="colour" colspan=2>{{ data.0 }}</td>
-          {% else %}
           <td class="colour">{{ data.0 }}</td>
           <td class="colour">{{ data.1 }}</td>
-          {% endif %}
           <td class="colour">{{ data.2 }}</td>
           <td class="colour">{{ data.3 }}</td>
           <td class="colour">{{ data.4 }}</td>
           <td class="colour">{{ data.5 }}</td>
+          <td>
+            <button class="btn-close" type="button" data-target="#modal-close" data-toggle="modal" onclick="closePositionPrompt({{ data.7 }}, '{{ name }}');">
+              <img src="{% static 'report/img/moneybag.png' %}" alt="Close position">
+            </button>
+          </td>
         </tr>
         {% endfor %}
+
+        <tr class="total">
+          <td>Total</td>
+          <td colspan=2>{{ stocks.open_total.0 }}</td>
+          <td></td>
+          <td>{{ stocks.open_total.1 }}</td>
+          <td>{{ stocks.open_total.2 }}</td>
+          <td>{{ stocks.open_total.3 }}</td>
+          <td></td>
+        </tr>
       </table>
     </div>
+
+    {% else %}
+    <div class="container-fluid table">
+      <h3 class="title text-muted text-center">You have no open positions</h3>
+    </div>
+    {% endif %}
+
+    {% if stocks.closed %}
+
+    <br>
+
+    <div class="container-fluid table">
+      <h3 class="title text-muted">Closed positions:</h3>
+      <table class="table">
+        <thead>
+          <th>Stock</th>
+          <th>Date closed</th>
+          <th>Buy price</th>
+          <th>Sell price</th>
+          <th>Position</th>
+          <th>Inital cost (USD)</th>
+          <th>P/L (USD)</th>
+          <th>P/L (%)</th>
+        </thead>
+
+        {% for name, data in stocks.closed.items %}
+        <tr class="{{ data.7 }}">
+          <td>{{ name }}</td>
+          <td class="colour">{{ data.0 }}</td>
+          <td class="colour">{{ data.1 }}</td>
+          <td class="colour">{{ data.2 }}</td>
+          <td class="colour">{{ data.3 }}</td>
+          <td class="colour">{{ data.4 }}</td>
+          <td class="colour">{{ data.5 }}</td>
+          <td class="colour">{{ data.6 }}</td>
+        </tr>
+        {% endfor %}
+
+        <tr class="total">
+          <td>Total</td>
+          <td colspan=4></td>
+          <td>{{ stocks.closed_total.0 }}</td>
+          <td>{{ stocks.closed_total.1 }}</td>
+          <td>{{ stocks.closed_total.2 }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <br>
+
+    <div class="container-fluid table">
+      <h3 class="title text-muted">Total portfolio profit/loss:</h3>
+      <table class="table">
+        <thead>
+          <th>Investment (USD)</th>
+          <th>Liquid value (USD)</th>
+          <th>Current P/L (USD)</th>
+          <th>Current P/L (%)</th>
+        </thead>
+
+        <tr class="{{ stocks.grand_total.4 }}">
+          <td>{{ stocks.grand_total.0 }}</td>
+          <td>{{ stocks.grand_total.1 }}</td>
+          <td class="colour">{{ stocks.grand_total.2 }}</td>
+          <td class="colour">{{ stocks.grand_total.3 }}</td>
+        </tr>
+      </table>
+    </div>
+
+    {% else %}
+    <div class="container-fluid table">
+      <h3 class="title text-muted text-center">You have no closed positions</h3>
+    </div>
+    {% endif %}
+
+    <form action="/close/" method="post">
+      {% csrf_token %}
+
+      <div class="modal fade" id="modal-close" tabindex="-1" role="dialog" aria-labelledby="modal-close-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal-close-title">Close position</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+
+                <p class="lead">
+                  <!-- js filled -->
+                </p>
+
+                <div class="form-group">
+                  <label for="close_price">Sell price</label>
+                  <input class="form-control" type="number" name="close_price" step=".01" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="close_date">Sell date</label>
+                  <input class="form-control" type="date" name="close_date" max="{% now 'Y-m-d' %}" required>
+                </div>
+
+                <input type="hidden" name="position_id" value="">
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Close position</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModal();">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <form action="/" method="post">
+      {% csrf_token %}
+
+      <div class="modal fade" id="modal-open" tabindex="-1" role="dialog" aria-labelledby="modal-open-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal-open-title">Open position</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$(this).closest('form').find('input').val('');">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="lead">
+                  Open a new position
+                </p>
+
+                <div class="form-row">
+                  <div class="col">
+                    <label for="buy_price">Stock code</label>
+                    <input class="form-control" type="text" name="stock_code" value="{{ form.field.stock_code|default:'' }}" required>
+                  </div>
+
+                  <div class="col">
+                    <label for="buy_price">Buy price</label>
+                    <input class="form-control" type="number" name="buy_price" step=".01" value="{{ form.field.buy_price|default:'' }}" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="buy_price">Buy date</label>
+                  <input class="form-control" type="date" name="buy_date" max="{% now 'Y-m-d' %}" value="{{ form.field.buy_date|default:'' }}" required>
+                </div>
+
+                <div class="form-row">
+                  <div class="col">
+                    <label for="buy_qty">Quantity</label>
+                    <input class="form-control" type="number" name="buy_qty" value="{{ form.field.buy_qty|default:'' }}" required>
+                  </div>
+
+                  <div class="col">
+                    <label for="buy_qty">Currency</label>
+                    <input class="form-control" type="text" name="currency" value="{{ form.field.currency|default:'' }}"  required>
+                    <small>Currently one of "USD", "GBP", "GBX" or "AUD"</small>
+                  </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Create position</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$(this).closest('form').find('input').val('');">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
 
   </body>
 
@@ -77,14 +266,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="{% static 'report/js/plotly-1.45.0.min.js' %}"></script>
+    <script src="{% static 'report/js/position.js' %}"></script>
 
   <script type="text/javascript">
 
     $(document).ready(function() {
+      if (createFormError) {
+        $('')
+      }
       plot();
     })
 
-    var plotData = jQuery.parseJSON('{{ plotData | safe }}');
+    const createFormError = Boolean({{ form.errors }});
+
+    const plotData = jQuery.parseJSON('{{ plotData | safe }}');
 
     function plot(data) {
         var data = plotData;  // List of series as dicts
