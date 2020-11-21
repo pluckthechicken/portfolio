@@ -22,6 +22,9 @@ div.table {
   vertical-align: middle;
   background-color: #282a29;
 }
+.table .total td {
+  padding: 20px 12px;
+}
 .table th {
   text-align: center;
   vertical-align: middle;
@@ -53,8 +56,8 @@ button.btn-close img {
 }
 #chart-div {
   width: 95vw;
-  max-width: 1280px;
+  max-width: 1420px;
   height: 65vw;
   max-height: 720px;
-  margin: 0 auto;
+  margin: 0 auto 25px auto;
 }

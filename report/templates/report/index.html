@@ -139,17 +139,15 @@
 
     <div class="container-fluid table">
       <h3 class="title text-muted">Total portfolio profit/loss:</h3>
-      <table class="table">
+      <table class="table total">
         <thead>
           <th>Investment (USD)</th>
-          <th>Liquid value (USD)</th>
           <th>Current P/L (USD)</th>
           <th>Current P/L (%)</th>
         </thead>
 
         <tr class="{{ stocks.grand_total.4 }}">
           <td>{{ stocks.grand_total.0 }}</td>
-          <td>{{ stocks.grand_total.1 }}</td>
           <td class="colour">{{ stocks.grand_total.2 }}</td>
           <td class="colour">{{ stocks.grand_total.3 }}</td>
         </tr>
@@ -161,6 +159,7 @@
       <h3 class="title text-muted text-center">You have no closed positions</h3>
     </div>
     {% endif %}
+
 
     <form action="/close/" method="post">
       {% csrf_token %}
@@ -289,23 +288,36 @@
         const layout = {
           plot_bgcolor:"#232524",
           paper_bgcolor:"#232524",
-          xaxis: {type: 'date', color: 'white'},
-          yaxis: {tickformat: ',.0%', color: 'white'},
+          xaxis: {
+            type: 'date',
+            color: 'white',
+            tickfont: {
+              size: mobile ? 12 : 18,
+            },
+          },
+          yaxis: {
+            tickformat: ',.0%',
+            color: 'white',
+            tickfont: {
+              size: mobile ? 12 : 18,
+            },
+          },
           legend: {
-            x: mobile ? 0.5 : 1,
+            x: mobile ? 0.5 : 1.05,
             y: mobile ? -0.15 : 0.5,
             xanchor: mobile ? 'center' : 'left',
             yanchor: mobile ? 'top' : 'center',
             font: {
-              color: '#FFFFFF'
+              color: '#FFFFFF',
+              size: mobile ? 12 : 18,
             },
           },
           margin: {
-            l: 0,
+            l: 50,
             r: 0,
-            b: 0,
+            b: 50,
             t: 0,
-            pad: 1,
+            pad: mobile ? 5 : 15,
           },
         };
         Plotly.newPlot('chart-div', data, layout, {responsive: true});
