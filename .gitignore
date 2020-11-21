@@ -1,6 +1,6 @@
 # User-defined
 portfolio.png
-static/
+portfolio/static/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
