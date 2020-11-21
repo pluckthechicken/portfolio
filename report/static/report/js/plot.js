@@ -1,3 +1,5 @@
+// Plot positions chart
+
 const mobile = window.innerWidth < 576;
 
 function plot() {
@@ -49,6 +51,7 @@ function plot() {
       {
         responsive: true,
         scrollZoom: mobile,
+        displaylogo: false,
       },
     );
 }
