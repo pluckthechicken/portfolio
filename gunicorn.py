@@ -4,5 +4,5 @@ workers = 1
 
 # Environment variables
 raw_env = [
-    "DJANGO_SETTINGS_MODULE=portfolio.settings"
+    "DJANGO_SETTINGS_MODULE=portfolio.settings.production"
 ]
