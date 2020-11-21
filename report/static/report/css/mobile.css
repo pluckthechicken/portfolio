@@ -1,0 +1,31 @@
+/* Tablet media */
+@media (max-width: 768px) {
+
+}
+
+/* Phone media */
+@media (max-width: 576px) {
+  h1.title {
+    text-align: center;
+    margin: 25px 15px;
+  }
+  h3.title {
+    margin: 25px 0;
+  }
+
+  div.table {
+    width: 95%;
+  }
+  .table td {
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+  .table th {
+    font-size: 0.8rem;
+  }
+  #chart-div {
+    width: 90vw;
+    height: 60vh;
+    margin: 15px auto 15px auto;
+  }
+}

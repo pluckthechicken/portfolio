@@ -5,10 +5,13 @@
     <meta charset="utf-8">
   	<meta charset="utf-8"/>
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
 
     <title> Stock portfolio </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'report/css/portfolio.css'%}">
+    <link rel="stylesheet" href="{% static 'report/css/mobile.css'%}">
 
     <link rel="apple-touch-icon" sizes="57x57" href="{% static 'report/icons/apple-icon-57x57.png' %}">
     <link rel="apple-touch-icon" sizes="60x60" href="{% static 'report/icons/apple-icon-60x60.png' %}">
@@ -32,11 +35,11 @@
 
     <div class="container-fluid">
       <h1 class='text-muted title'> Stock portfolio </h1>
-      <div id="chart-div" style="max-width: 1000px; height: 600px; margin: 0 auto;"></div>
+      <div id="chart-div"></div>
     </div>
 
     <div class="container text-center">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-open">Create new position</button>
+      <button type="button" class="btn btn-primary" id="btn-create" data-toggle="modal" data-target="#modal-open">Create new position</button>
     </div>
 
     {% if stocks.open %}
@@ -272,27 +275,38 @@
 
     $(document).ready(function() {
       if (createFormError) {
-        $('')
+        $('btn-create').click();
       }
       plot();
     })
 
     const createFormError = Boolean({{ form.errors }});
-
     const plotData = jQuery.parseJSON('{{ plotData | safe }}');
+    const mobile = window.innerWidth < 576;
 
-    function plot(data) {
-        var data = plotData;  // List of series as dicts
-        var layout = {
+    function plot() {
+        const data = plotData;  // List of series as dicts
+        const layout = {
           plot_bgcolor:"#232524",
           paper_bgcolor:"#232524",
           xaxis: {type: 'date', color: 'white'},
           yaxis: {tickformat: ',.0%', color: 'white'},
           legend: {
+            x: mobile ? 0.5 : 1,
+            y: mobile ? -0.15 : 0.5,
+            xanchor: mobile ? 'center' : 'left',
+            yanchor: mobile ? 'top' : 'center',
             font: {
               color: '#FFFFFF'
-            }
-          }
+            },
+          },
+          margin: {
+            l: 0,
+            r: 0,
+            b: 0,
+            t: 0,
+            pad: 1,
+          },
         };
         Plotly.newPlot('chart-div', data, layout, {responsive: true});
     }
