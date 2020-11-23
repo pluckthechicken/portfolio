@@ -116,11 +116,11 @@ class Position(models.Model):
         return json.dumps(data)
 
     @classmethod
-    def get(cls, stock):
+    def get(cls, stock, closed=False):
         """Get a position instance by stock_code."""
         positions = cls.objects.filter(stock_code__iexact=stock)
-        if len(positions) == 1:
-            return positions[0]
+        if not closed:
+            positions = positions.filter(close_price__isnull=True)
         return positions
 
     @classmethod
