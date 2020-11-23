@@ -78,10 +78,7 @@ class Position(models.Model):
     def refresh_all(cls):
         """Dump all data on open positions and refresh from API."""
         for p in cls.open():
-            p.series_x = []
-            p.series_y = []
-            p.save()
-            p.update()
+            p.refresh()
 
     @classmethod
     def fetch_plot_json(cls):
@@ -149,6 +146,13 @@ class Position(models.Model):
         self.save()
         self.update()
         print(f'{self.stock_code} has been reopened')
+
+    def refresh(self):
+        """Purge all historical data and fetch fresh from the API."""
+        self.series_x = []
+        self.series_y = []
+        self.save()
+        self.update()
 
     def update(self):
         """Update the model with today's data."""

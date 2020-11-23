@@ -9,19 +9,20 @@ from . import currency
 from .timing import Stopwatch
 
 
-def fetch_close(position):
+def fetch_close(position, fetch_raw=False):
     """Return series of historical daily closing share price."""
     sw = Stopwatch()
-    if position.series_x:
-        date_from = position.series_x[-1] + timedelta(days=1)
-    else:
+
+    if fetch_raw or not position.series_x:
         date_from = position.buy_date
+    else:
+        date_from = position.series_x[-1] + timedelta(days=1)
+        if date_from >= date.today():
+            print(f"Returning after {sw.lap()} sec")
+            return
 
     print("Date from:", date_from.strftime('%Y-%m-%d'))
     print("Date today:", date.today().strftime('%Y-%m-%d'))
-    if date_from >= date.today():
-        print(f"Returning after {sw.lap()} sec")
-        return
 
     print(f"Time comparison took {sw.lap()} sec")
     dfs = pdr.get_data_yahoo(
@@ -30,17 +31,23 @@ def fetch_close(position):
         end=date.today()
     )
     print(f"Fetched data in {sw.lap()} sec")
+    if fetch_raw:
+        return dfs['Close']
 
     # Remove duplicate dates from api data
     dfs.index = [ix.to_pydatetime().date() for ix in dfs.index]
-    dfs = dfs.loc[~dfs.index.duplicated(keep='first')]
+    dfs = dfs.loc[~dfs.index.duplicated(keep='last')]
     print(f"Cleaned API duplicates in {sw.lap()} sec")
 
     # Remove dates that already exist in DB
     if position.series_x:
-        unique_dates = np.intersect1d(dfs.index, position.series_x)
+        existing_dates = np.intersect1d(dfs.index, position.series_x)
+        print("Dropping existing dates:\n", '\n'.join([
+            d.strftime("%d-%m-%Y")
+            for d in existing_dates
+        ]))
         dfs.drop(
-            dfs.loc[unique_dates].index,
+            dfs.loc[existing_dates].index,
             inplace=True
         )
     print(f"Cleaned existing dates in {sw.lap()} sec")
