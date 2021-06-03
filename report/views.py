@@ -28,7 +28,6 @@ def home(request):
                 }
             )
 
-    Position.update_all()
     return render(request, 'report/index.html', {
         'stocks': Position.render_report(),
         'plotData': Position.fetch_plot_json(),
