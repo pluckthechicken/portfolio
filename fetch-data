@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cd /home/dev/code/portfolio/
+source /home/dev/env/portfolio/bin/activate
+/home/dev/env/portfolio/bin/python manage.py fetch-data \
+>> portfolio/logs/fetch.log
